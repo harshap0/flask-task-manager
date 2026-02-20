@@ -17,7 +17,6 @@ def init_db():
     """)
     conn.commit()
     conn.close()
-init_db()
 @app.route("/")
 def index():
     conn = sqlite3.connect("tasks.db")
@@ -63,8 +62,10 @@ def complete(id):
 
     conn.commit()
     conn.close()
+with app.app_context():
+    init_db()
 
-    return redirect("/")
+   
 
 if __name__ == "__main__":
     init_db()
