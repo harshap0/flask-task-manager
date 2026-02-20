@@ -1,4 +1,81 @@
+/* Background */
 body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to right, #4e73df, #1cc88a);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Main container */
+.container {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    width: 400px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Title */
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Input */
+input[type="text"] {
+    width: 70%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+/* Add button */
+button {
+    padding: 10px 15px;
+    background-color: #4e73df;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: #2e59d9;
+}
+
+/* Task list */
+ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+li {
+    padding: 10px;
+    background: #f8f9fc;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Completed task */
+.completed {
+    text-decoration: line-through;
+    color: gray;
+}
+
+/* Icons */
+a {
+    text-decoration: none;
+    margin-left: 8px;
+}body {
     font-family: "Segoe UI", Arial, sans-serif;
     background: #f4f6f8;
     display: flex;
@@ -131,4 +208,32 @@ a {
     color: red;
     text-decoration: none;
     font-weight: bold;
+}
+
+/* Task Counter */
+.counter {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #555;
+    font-size: 14px;
+}
+
+/* Delete button */
+.delete {
+    color: #e11d48;
+    font-weight: bold;
+    text-decoration: none;
+    margin-left: 10px;
+}
+
+.delete:hover {
+    color: #be123c;
+    transform: scale(1.2);
+}
+
+/* Completed task */
+.completed {
+    text-decoration: line-through;
+    color: gray;
+    opacity: 0.7;
 }

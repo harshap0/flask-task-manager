@@ -8,6 +8,7 @@
 
 <div class="container">
     <h1>Task Manager</h1>
+    <p class="counter"> Total Tasks :{{ tasks|length }}</p>
 
     <form action="/add" method="POST">
         <input type="text" name="content" placeholder="Enter task" required>
@@ -17,34 +18,17 @@
     <ul>
         {% for task in tasks %}
         <li>
-            {{ task[1] }}
+            {% if task[2] == 1 %}
+                <span class="completed">{{ task[1] }}</span>
+            {% else %}
+                <span>{{ task[1] }}</span>
+                <a href="/complete/{{ task[0] }}">✔</a>
+            {% endif %}
             <a href="/delete/{{ task[0] }}">❌</a>
         </li>
         {% endfor %}
     </ul>
 </div>
 
-</body>
-</html><!DOCTYPE html>
-<html>
-<head>
-    <title>Flask Task Manager</title>
-</head>
-<body>
-    <h1>Task Manager</h1>
-
-    <form action="/add" method="post">
-        <input type="text" name="content" placeholder="Enter task" required>
-        <button type="submit">Add Task</button>
-    </form>
-
-    <ul>
-        {% for task in tasks %}
-            <li>
-                {{ task[1] }}
-                <a href="/delete/{{ task[0] }}">❌</a>
-            </li>
-        {% endfor %}
-    </ul>
 </body>
 </html>

@@ -9,7 +9,7 @@ def init_db():
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS tasks (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            content TEXT NOT NULL
+            content TEXT NOT NULL,completed INTEGER DEFAULT 0
         )
     """)
     conn.commit()
@@ -19,7 +19,7 @@ def init_db():
 def index():
     conn = sqlite3.connect("tasks.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM tasks")
+    cursor.execute("SELECT * FROM tasks ORDER BY completed ASC, id DESC")
     tasks = cursor.fetchall()
     conn.close()
     return render_template("index.html", tasks=tasks)
@@ -41,6 +41,26 @@ def delete(id):
     cursor.execute("DELETE FROM tasks WHERE id = ?", (id,))
     conn.commit()
     conn.close()
+    return redirect("/")
+@app.route("/complete/<int:id>")
+def complete(id):
+    conn=sqlite3.connect("tasks.db")
+    cursor=conn.cursor()
+    cursor.execute("SELECT completed FROM  tasks WHERE id = ?" ,(id,))
+    row=cursor.fetchone()
+    
+    if row is None:
+        conn.close()
+        return redirect("/")
+
+    current_status=row[0]
+    new_status=0 if current_status==1 else 1
+    cursor.execute("UPDATE tasks SET completed = ? WHERE id=?",
+    (new_status, id)) 
+
+    conn.commit()
+    conn.close()
+
     return redirect("/")
 
 if __name__ == "__main__":
