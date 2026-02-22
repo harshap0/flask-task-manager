@@ -17,16 +17,18 @@
 
     <ul>
         {% for task in tasks %}
-        <li>
-            {% if task[2] == 1 %}
-                <span class="completed">{{ task[1] }}</span>
-            {% else %}
-                <span>{{ task[1] }}</span>
-                <a href="/complete/{{ task[0] }}">✔</a>
-            {% endif %}
-            <a href="/delete/{{ task[0] }}">❌</a>
-        </li>
-        {% endfor %}
+<li>
+    <a href="/complete/{{ task[0] }}" style="text-decoration: none; color: inherit;">
+        {% if task[2] == 1 %}
+            <span class="completed">{{ task[1] }}</span>
+        {% else %}
+            <span>{{ task[1] }}</span>
+        {% endif %}
+    </a>
+
+    <a href="/delete/{{ task[0] }}">X</a>
+</li>
+{% endfor %}
     </ul>
 </div>
 
