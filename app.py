@@ -32,6 +32,9 @@ def init_db():
 # 🔥 Always initialize DB when app loads
 init_db()
 
+@app.route("/test")
+def test():
+    return "App is Working!"
 
 @app.route("/")
 def index():
