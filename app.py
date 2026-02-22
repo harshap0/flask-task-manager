@@ -3,70 +3,83 @@ import sqlite3
 import os
 
 app = Flask(__name__)
-BASE_DIR=os.path.dirname(os.path.abspath(__file__))
-DB_PATH=os.path.join(BASE_DIR,"tasks.db")
+
+# Absolute database path
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "tasks.db")
+
+
+def get_connection():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
+
 
 def init_db():
-    conn = sqlite3.connect("DB_PATH")
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS tasks (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            task TEXT NOT NULL,completed INTEGER DEFAULT 0
+            task TEXT NOT NULL,
+            completed INTEGER DEFAULT 0
         )
     """)
     conn.commit()
     conn.close()
+
+
+# 🔥 Always initialize DB when app loads
+init_db()
+
+
 @app.route("/")
 def index():
-    conn = sqlite3.connect("tasks.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM tasks ORDER BY completed ASC, id DESC")
-    tasks = cursor.fetchall()
+    conn = get_connection()
+    tasks = conn.execute(
+        "SELECT * FROM tasks ORDER BY completed ASC, id DESC"
+    ).fetchall()
     conn.close()
     return render_template("index.html", tasks=tasks)
+
 
 @app.route("/add", methods=["POST"])
 def add():
     task = request.form["content"]
-    conn = sqlite3.connect("tasks.db")
-    cursor = conn.cursor()
-    cursor.execute("INSERT INTO tasks (task) VALUES (?)", (task,))
+    conn = get_connection()
+    conn.execute("INSERT INTO tasks (task) VALUES (?)", (task,))
     conn.commit()
     conn.close()
     return redirect("/")
+
 
 @app.route("/delete/<int:id>")
 def delete(id):
-    conn = sqlite3.connect("tasks.db")
-    cursor = conn.cursor()
-    cursor.execute("DELETE FROM tasks WHERE id = ?", (id,))
+    conn = get_connection()
+    conn.execute("DELETE FROM tasks WHERE id = ?", (id,))
     conn.commit()
     conn.close()
     return redirect("/")
+
+
 @app.route("/complete/<int:id>")
 def complete(id):
-    conn=sqlite3.connect("tasks.db")
-    cursor=conn.cursor()
-    cursor.execute("SELECT completed FROM  tasks WHERE id = ?" ,(id,))
-    row=cursor.fetchone()
-    
-    if row is None:
-        conn.close()
-        return redirect("/")
+    conn = get_connection()
+    task = conn.execute(
+        "SELECT completed FROM tasks WHERE id = ?", (id,)
+    ).fetchone()
 
-    current_status=row[0]
-    new_status=0 if current_status==1 else 1
-    cursor.execute("UPDATE tasks SET completed = ? WHERE id=?",
-    (new_status, id)) 
+    if task:
+        new_status = 0 if task["completed"] == 1 else 1
+        conn.execute(
+            "UPDATE tasks SET completed = ? WHERE id = ?",
+            (new_status, id)
+        )
+        conn.commit()
 
-    conn.commit()
     conn.close()
-with app.app_context():
-    init_db()
+    return redirect("/")
 
-   
 
 if __name__ == "__main__":
-    init_db()
     app.run(debug=True)
